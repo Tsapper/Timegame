@@ -8,7 +8,7 @@ public class MainMenu : MonoBehaviour
 
     public void Play()
     {
-        StartCoroutine(sceneFader.FadeAndLoadScene(SceneFader.FadeDirection.In, "Game"));
+        StartCoroutine(sceneFader.FadeAndLoadScene(SceneFader.FadeDirection.In, "Level 1"));
     }
 
     public void Quit()

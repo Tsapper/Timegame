@@ -5,6 +5,7 @@ using UnityEngine;
 public class PickupItem : MonoBehaviour
 {
     [SerializeField] float distance = 1.2f;
+    [SerializeField] bool presentObject;
     private bool pickedUp;
     private Transform originalParent;
 
@@ -19,6 +20,24 @@ public class PickupItem : MonoBehaviour
         {
             PickUp();
         }
+
+        if (pickedUp && presentObject && !TimeManager.present)
+        {
+            pickedUp = false;
+            GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+            transform.SetParent(originalParent, true);
+            transform.position += new Vector3(0, -30f, 0);
+            GetComponentInParent<TimeObject>().ToPresent();
+        }
+
+        if (pickedUp && Player.GetPlayer().GetComponent<Rigidbody2D>().velocity.x > 0)
+        {
+            transform.localPosition = new Vector3(1.1f, 0.25f, 0f);
+        }
+        if (pickedUp && Player.GetPlayer().GetComponent<Rigidbody2D>().velocity.x < 0)
+        {
+            transform.localPosition = new Vector3(-1.1f, 0.25f, 0f);
+        }
     }
 
     private void PickUp()
@@ -27,19 +46,25 @@ public class PickupItem : MonoBehaviour
         {
             if (!pickedUp)
             {
-                pickedUp = true;
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
                 GetComponent<Rigidbody2D>().velocity = Vector2.zero;
                 transform.SetParent(Player.GetPlayer().transform, false);
                 transform.localPosition = new Vector3(-1.1f, 0.25f, 0f);
+                originalParent.GetComponent<TimeObject>().ToPresent();
             }
-            else
+            if (pickedUp)
             {
-                pickedUp = false;
                 GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
                 transform.SetParent(originalParent, true);
             }
-            
+            pickedUp = !pickedUp;
         }
+    }
+
+    public void DropItem()
+    {
+        GetComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Dynamic;
+        transform.SetParent(originalParent, true);
+        pickedUp = false;
     }
 }

@@ -16,22 +16,22 @@ public class TimeManager : MonoBehaviour
     public void ToFuture()
     {
         Camera.main.transform.position += new Vector3(0, 30f, 0);
+        present = false;
+        StartCoroutine(AudioManager.GetAudioManager().PlaySound(0, 0f));
         foreach (TimeObject timeObject in timeObjects)
         {
-            present = false;
             timeObject.ToFuture();
-            StartCoroutine(AudioManager.GetAudioManager().PlaySound(0, 0f));
         }
     }
 
     public void ToPresent()
     {
         Camera.main.transform.position += new Vector3(0, -30f, 0);
+        present = true;
+        StartCoroutine(AudioManager.GetAudioManager().PlaySound(1, 0f));
         foreach (TimeObject timeObject in timeObjects)
         {
-            present = true;
             timeObject.ToPresent();
-            StartCoroutine(AudioManager.GetAudioManager().PlaySound(1, 0f));
         }
     }
 }

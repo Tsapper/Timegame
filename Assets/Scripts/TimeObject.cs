@@ -7,19 +7,23 @@ public class TimeObject : MonoBehaviour
     public GameObject presentObject;
     public GameObject futureObject;
 
+    Vector3 spawnPos;
     Vector3 lastPresentPosition;
 
     private void Start()
     {
         lastPresentPosition = presentObject.transform.position;
+        spawnPos = presentObject.transform.position;
     }
 
     private void Update()
     {
-        if (Vector3.Distance(lastPresentPosition, presentObject.transform.position) >= 0.05f)
+        if (Vector3.Distance(lastPresentPosition, presentObject.transform.position) >= 0.15f)
         {
             futureObject.transform.SetParent(transform, true);
             futureObject.transform.position = presentObject.transform.position + new Vector3(0, 30f, 0);
+            futureObject.GetComponent<PickupItem>().DropItem();
+            lastPresentPosition = presentObject.transform.position;
         }
     }
 
@@ -32,4 +36,14 @@ public class TimeObject : MonoBehaviour
     {
         lastPresentPosition = presentObject.transform.position;
     }
+
+    public void Respawn()
+    {
+        presentObject.transform.position = spawnPos;
+    }
+
+    public void FutureRespawn()
+    {
+        futureObject.transform.position = spawnPos + new Vector3(0, 30f, 0);
+    }    
 }

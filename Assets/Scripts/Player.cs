@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
     [SerializeField] private TimeManager timeManager;
+    private SceneFader sceneFader;
     [SerializeField] private Volume volume;
     private ChromaticAberration aberration;
     private float targetChromatic;
@@ -22,26 +26,46 @@ public class Player : MonoBehaviour
     {
         aberration = ScriptableObject.CreateInstance<ChromaticAberration>();
         StartCoroutine(AudioManager.GetAudioManager().PlaySound(2, 2f));
+        sceneFader = FindObjectOfType<SceneFader>();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        input = Input.GetAxisRaw("Horizontal") * Time.deltaTime;
+        input = Input.GetAxisRaw("Horizontal") * Time.fixedDeltaTime;
 
         Vector2 velocity = rb.velocity;
         velocity.x = input * speed * 100f;
         
-        if (Input.GetKeyDown(KeyCode.Space) && grounded)
-        {
-            velocity.y = jumpSpeed;
-            grounded = false;
-        }
         rb.velocity = velocity;
 
+        if (input > 0)
+        {
+            spriteRenderer.flipX = true;
+        }
+        if (input < 0)
+        {
+            spriteRenderer.flipX = false;
+        }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && grounded)
+        {
+            grounded = false;
+            Vector2 velocity = rb.velocity;
+            velocity.y = jumpSpeed;
+            rb.velocity = velocity;
+        }
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             ShiftTime();
         }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            Reset();
+        }
+
         aberration.intensity.value = Mathf.Lerp(aberration.intensity.value, targetChromatic, 2f * Time.deltaTime);
         volume.profile.TryGet<ChromaticAberration>(out aberration);
     }
@@ -56,8 +80,8 @@ public class Player : MonoBehaviour
         if (TimeManager.present)
         {
             targetChromatic = 0.5f;
-            timeManager.ToFuture();
             transform.position += new Vector3(0, 30f, 0);
+            timeManager.ToFuture();
         }
         else
         {
@@ -70,5 +94,10 @@ public class Player : MonoBehaviour
     public static Player GetPlayer()
     {
         return FindObjectOfType<Player>();
+    }
+
+    private void Reset()
+    {
+        StartCoroutine(sceneFader.FadeAndLoadScene(SceneFader.FadeDirection.In, "Level " + SceneManager.GetActiveScene().buildIndex));
     }
 }

@@ -181,6 +181,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance: 1.2
+  presentObject: 1
 --- !u!1 &5617810961625039972
 GameObject:
   m_ObjectHideFlags: 0
@@ -307,7 +308,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 62a31ba00bb7d9e4aa46b3719c12585c, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 8e1f525fb0b035045b8afbe3851519bb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -410,3 +411,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distance: 1.2
+  presentObject: 0
